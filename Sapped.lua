@@ -21,9 +21,8 @@ local function updateEventRegistration()
 end
 
 -- Message to send when the player is sapped
-local function SendTheMessage()
-    -- SendChatMessage("Sapped!! {rt8} {rt8}", "SAY")
-    print(Sapped.GetMessage())
+local function SendMessage()
+    SendChatMessage(Sapped.GetMessage())
 end
 
 frame:SetScript("OnEvent", function(_, event, ...)
@@ -36,8 +35,7 @@ frame:SetScript("OnEvent", function(_, event, ...)
         if (eventType == "SPELL_AURA_APPLIED" or eventType == "SPELL_AURA_REFRESH") and destGUID == UnitGUID("player") then
             -- Check if the spell ID matches the "Sapped" debuff
             if spellId == 6770 then
-                -- SendMessage()
-                SendChatMessage("Sapped!! {rt8} {rt8}", "SAY")
+                SendMessage()
             end
         end
     elseif event == "PLAYER_ENTERING_WORLD" or event == "ZONE_CHANGED_NEW_AREA" or event == "PLAYER_FLAGS_CHANGED" then
@@ -54,4 +52,6 @@ frame:RegisterEvent("PLAYER_FLAGS_CHANGED")
 updateEventRegistration()
 
 SLASH_SAPPED1 = "/sapped"
-SlashCmdList["SAPPED"] = SendTheMessage
+SlashCmdList["SAPPED"] = function()
+    SendMessage()
+end
