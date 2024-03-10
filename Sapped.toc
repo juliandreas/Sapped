@@ -7,5 +7,6 @@
 ## IconTexture: 132310
 ## SavedVariables: SappedDB
 
-Config.lua
+Setup.lua
 Sapped.lua
+Options.lua

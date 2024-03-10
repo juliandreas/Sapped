@@ -1,4 +1,4 @@
-SappedAddon = SappedAddon or {}
+Sapped = Sapped or {}
 
 -- Utility function to create buttons
 local function CreateButton(name, parent, label, point, relativeFrame, relativePoint, offsetX, offsetY, width, height)
@@ -13,7 +13,7 @@ end
 local function SetupMainPanel()
     --- @class ExamplePanel : Frame
     local panel = CreateFrame("Frame")
-    panel.name = AddonName
+    panel.name = "Sapped"
 
     -- Panel title
     local title = panel:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
@@ -28,7 +28,7 @@ local function SetupMainPanel()
     
     -- OnShow: Update editBox text to current message
     panel:SetScript("OnShow", function()
-        editBox:SetText(SappedAddon.GetMessage())
+        editBox:SetText(Sapped.GetMessage())
     end)
 
     return panel, editBox
@@ -39,14 +39,14 @@ local function AddButtonsToPanel(panel, editBox)
     -- Save button setup
     local saveButton = CreateButton("SaveButton", panel, "Save", "LEFT", editBox, "RIGHT", 10, 0, 80, 22)
     saveButton:SetScript("OnClick", function()
-        CustomMessage = editBox:GetText()
+        Sapped.State.CustomMessage = editBox:GetText()
     end)
 
     -- Reset button setup
     local resetButton = CreateButton("ResetButton", panel, "Reset", "LEFT", saveButton, "RIGHT", 10, 0, 80, 22)
     resetButton:SetScript("OnClick", function()
-        editBox:SetText(DefaultMessage)
-        CustomMessage = ""
+        editBox:SetText(Sapped.State.DefaultMessage)
+        Sapped.State.CustomMessage = ""
     end)
 end
 

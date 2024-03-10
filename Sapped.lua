@@ -1,4 +1,4 @@
-SappedAddon = SappedAddon or {}
+Sapped = Sapped or {}
 
 local frame = CreateFrame("Frame")
 
@@ -23,7 +23,7 @@ end
 -- Message to send when the player is sapped
 local function SendTheMessage()
     -- SendChatMessage("Sapped!! {rt8} {rt8}", "SAY")
-    print(SappedAddon.GetMessage())
+    print(Sapped.GetMessage())
 end
 
 frame:SetScript("OnEvent", function(_, event, ...)
