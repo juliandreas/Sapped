@@ -1,6 +1,6 @@
 Sapped = Sapped or {
     State = {
-        DefaultMessage = "Sapped!! {rt8} {rt8}",
+        DefaultMessage = "Sapped!",
         CustomMessage = "",
     }
 }
