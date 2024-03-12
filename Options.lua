@@ -11,14 +11,14 @@ end
 
 -- Setup function for the main panel
 local function SetupMainPanel()
-    --- @class ExamplePanel : Frame
+    --- @class SappedPanel : Frame
     local panel = CreateFrame("Frame")
     panel.name = "Sapped"
 
     -- Panel title
     local title = panel:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
     title:SetPoint("TOPLEFT", 16, -16)
-    title:SetText("Example Addon Settings")
+    title:SetText("Settings")
 
     -- Edit box for custom message
     local editBox = CreateFrame("EditBox", nil, panel, "InputBoxTemplate")

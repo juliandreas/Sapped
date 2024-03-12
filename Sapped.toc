@@ -1,7 +1,7 @@
 ## Interface: 100205
 ## Title: Sapped
 ## Author: Guttersnipe
-## Version: 1.0
+## Version: 1.1
 ## Notes: A simple addon to call out "Sapped" in chat when you get sapped
 ## X-Category: Battlegrounds/PvP, Chat/Communication
 ## IconTexture: 132310
