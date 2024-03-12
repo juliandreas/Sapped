@@ -20,21 +20,34 @@ jobs:
       - name: Extract Title and Version from .toc
         id: toc_info
         run: |
+          # Extracts the addon's title and version from the .toc file.
           TITLE=$(grep '## Title:' Sapped.toc | cut -d':' -f2- | xargs)
           VERSION=$(grep '## Version:' Sapped.toc | cut -d':' -f2- | xargs)
+          # Sets the title and version as environment variables for subsequent steps.
           echo "TITLE=$TITLE" >> $GITHUB_ENV
           echo "VERSION=$VERSION" >> $GITHUB_ENV
+          # Also sets them as outputs for potential use in later steps.
           echo "::set-output name=TITLE::$TITLE"
           echo "::set-output name=VERSION::$VERSION"
 
       - name: Prepare Addon Directory
         run: |
+          # Create a directory named after the addon and sync all relevant files into it,
+          # excluding files like .git, .vscode, and .github to prepare for zipping.
           mkdir "${{ steps.toc_info.outputs.TITLE }}"
           rsync -avm --exclude='.git/' --exclude='.vscode/' --exclude='.github/' ./ "${{ steps.toc_info.outputs.TITLE }}/"
 
+      - name: Set ZIP Filename Environment Variable
+        run: |
+          # Combine the addon's title and version to form the name of the zip file, for example "Sapped-1.0.0.zip",
+          # and store it in an environment variable for easy reference.
+          echo "ADDON_ZIP_FILENAME=${{ steps.toc_info.outputs.TITLE }}-${{ steps.toc_info.outputs.VERSION }}.zip" >> $GITHUB_ENV
+
       - name: Zip Addon Directory
         run: |
-          zip -r "${{ steps.toc_info.outputs.TITLE }}-${{ steps.toc_info.outputs.VERSION }}.zip" "${{ steps.toc_info.outputs.TITLE }}"/
+          # Zip the prepared directory, using the previously defined filename,
+          # to create a package ready for upload to CurseForge.
+          zip -r ${{ env.ADDON_ZIP_FILENAME }} "${{ steps.toc_info.outputs.TITLE }}"/
 
       - name: Upload to CurseForge
         uses: itsmeow/curseforge-upload@v3
@@ -46,7 +59,7 @@ jobs:
           display_name: "${{ steps.toc_info.outputs.TITLE }}"
           game_versions: ${{ github.event.inputs.game_versions }}
           changelog: ${{ github.event.inputs.changelog }}
-          file_path: "${{ steps.toc_info.outputs.TITLE }}-${{ steps.toc_info.outputs.VERSION }}.zip"
+          file_path: ${{ env.ADDON_ZIP_FILENAME }}
 
       - name: Cleanup Addon Directory
         run: rm -rf "${{ steps.toc_info.outputs.TITLE }}"
