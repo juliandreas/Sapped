@@ -24,11 +24,16 @@ jobs:
           echo "VERSION=$VERSION" >> $GITHUB_ENV
           echo "::set-output name=VERSION::$VERSION"
 
+      - name: Prepare Addon Directory
+        run: |
+          mkdir Sapped
+          rsync -avm --exclude='.git/' --exclude='.vscode/' --exclude='.github/' ./ Sapped/
+
       - name: Zip Addon Directory
         run: |
-          zip -r Sapped-${{ steps.version.outputs.VERSION }}.zip . -x "*.git*" -x "*.vscode*" -x "*.github*"
+          zip -r Sapped-${{ steps.version.outputs.VERSION }}.zip Sapped/
 
-      - name: "Upload to CurseForge"
+      - name: Upload to CurseForge
         uses: itsmeow/curseforge-upload@v3
         with:
           token: "${{ secrets.CF_API_TOKEN }}"
@@ -39,3 +44,6 @@ jobs:
           game_versions: ${{ github.event.inputs.game_versions }}
           changelog: ${{ github.event.inputs.changelog }}
           file_path: "Sapped-${{ steps.version.outputs.VERSION }}.zip"
+
+      - name: Cleanup Addon Directory
+        run: rm -rf Sapper
