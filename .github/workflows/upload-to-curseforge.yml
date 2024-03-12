@@ -6,11 +6,9 @@ on:
       changelog:
         description: "Changelog"
         required: true
-        default: "Initial release"
       game_versions:
         description: "Game Versions"
         required: true
-        default: "10.2.5"
 
 jobs:
   upload:
@@ -22,7 +20,7 @@ jobs:
       - name: Extract Version from .toc
         id: version
         run: |
-          VERSION=$(grep '## Version:' ExampleAddon.toc | awk '{print $3}')
+          VERSION=$(grep '## Version:' Sapped.toc | awk '{print $3}')
           echo "VERSION=$VERSION" >> $GITHUB_ENV
           echo "::set-output name=VERSION::$VERSION"
 
