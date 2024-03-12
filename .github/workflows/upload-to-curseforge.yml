@@ -1,0 +1,43 @@
+name: Upload to CurseForge
+
+on:
+  workflow_dispatch:
+    inputs:
+      changelog:
+        description: "Changelog"
+        required: true
+        default: "Initial release"
+      game_versions:
+        description: "Game Versions"
+        required: true
+        default: "10.2.5"
+
+jobs:
+  upload:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Extract Version from .toc
+        id: version
+        run: |
+          VERSION=$(grep '## Version:' ExampleAddon.toc | awk '{print $3}')
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+          echo "::set-output name=VERSION::$VERSION"
+
+      - name: Zip Addon Directory
+        run: |
+          zip -r Sapped-${{ steps.version.outputs.VERSION }}.zip . -x "*.git*" -x "*.vscode*" -x "*.github*"
+
+      - name: "Upload to CurseForge"
+        uses: itsmeow/curseforge-upload@v3
+        with:
+          token: "${{ secrets.CF_API_TOKEN }}"
+          project_id: 986227
+          game_endpoint: "wow"
+          release_type: "release"
+          display_name: "Sapped"
+          game_versions: ${{ github.event.inputs.game_versions }}
+          changelog: ${{ github.event.inputs.changelog }}
+          file_path: "Sapped-${{ steps.version.outputs.VERSION }}.zip"
