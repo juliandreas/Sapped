@@ -17,21 +17,24 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Extract Version from .toc
-        id: version
+      - name: Extract Title and Version from .toc
+        id: toc_info
         run: |
-          VERSION=$(grep '## Version:' Sapped.toc | awk '{print $3}')
+          TITLE=$(grep '## Title:' Sapped.toc | cut -d':' -f2- | xargs)
+          VERSION=$(grep '## Version:' Sapped.toc | cut -d':' -f2- | xargs)
+          echo "TITLE=$TITLE" >> $GITHUB_ENV
           echo "VERSION=$VERSION" >> $GITHUB_ENV
+          echo "::set-output name=TITLE::$TITLE"
           echo "::set-output name=VERSION::$VERSION"
 
       - name: Prepare Addon Directory
         run: |
-          mkdir Sapped
-          rsync -avm --exclude='.git/' --exclude='.vscode/' --exclude='.github/' ./ Sapped/
+          mkdir "${{ steps.toc_info.outputs.TITLE }}"
+          rsync -avm --exclude='.git/' --exclude='.vscode/' --exclude='.github/' ./ "${{ steps.toc_info.outputs.TITLE }}/"
 
       - name: Zip Addon Directory
         run: |
-          zip -r Sapped-${{ steps.version.outputs.VERSION }}.zip Sapped/
+          zip -r "${{ steps.toc_info.outputs.TITLE }}-${{ steps.toc_info.outputs.VERSION }}.zip" "${{ steps.toc_info.outputs.TITLE }}"/
 
       - name: Upload to CurseForge
         uses: itsmeow/curseforge-upload@v3
@@ -40,10 +43,10 @@ jobs:
           project_id: 986227
           game_endpoint: "wow"
           release_type: "release"
-          display_name: "Sapped"
+          display_name: "${{ steps.toc_info.outputs.TITLE }}"
           game_versions: ${{ github.event.inputs.game_versions }}
           changelog: ${{ github.event.inputs.changelog }}
-          file_path: "Sapped-${{ steps.version.outputs.VERSION }}.zip"
+          file_path: "${{ steps.toc_info.outputs.TITLE }}-${{ steps.toc_info.outputs.VERSION }}.zip"
 
       - name: Cleanup Addon Directory
-        run: rm -rf Sapper
+        run: rm -rf "${{ steps.toc_info.outputs.TITLE }}"
