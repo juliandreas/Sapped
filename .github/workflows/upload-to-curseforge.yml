@@ -3,6 +3,10 @@ name: Upload to CurseForge
 on:
   workflow_dispatch:
     inputs:
+      version_updated:
+        description: "Have you updated the version? (yes/no)"
+        required: true
+        default: "no"
       changelog:
         description: "Changelog"
         required: true
@@ -16,6 +20,13 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+
+      - name: Check Version Confirmation
+        run: |
+          if [ "${{ github.event.inputs.version_updated }}" != "yes" ]; then
+            echo "Version update not confirmed. Please confirm the version has been updated before proceeding."
+            exit 1
+          fi
 
       - name: Extract Title and Version from .toc
         id: toc_info
