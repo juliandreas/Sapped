@@ -11,7 +11,7 @@ on:
         description: "Changelog"
         required: true
       game_versions:
-        description: "Game Versions"
+        description: "Game Versions (e.g. 10.2.5)"
         required: true
 
 jobs:
